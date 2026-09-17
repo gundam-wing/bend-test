@@ -83,6 +83,10 @@ def start() -> Game:
     False{}, Play{}
   }
 
+def pos_x(g: Game) -> U32:
+  Game{tiles, +px, py, score, time, cool, left, right, up, down, mode} = g
+  px
+
 def count_leaf_on(acc: U32, z: Bool) -> U32:
   match z:
     case True{}:
@@ -295,61 +299,88 @@ def set_down(g: Game, pressed: Bool) -> Game:
   Game{tiles, px, py, score, time, cool, left, right, up, down, mode} = g
   Game{tiles, px, py, score, time, cool, left, right, up, pressed, mode}
 
+# A desktop tap often delivers press and release in the same frame. Move on
+# press so that still walks one tile; keep the held flag for repeats.
+def hold_move(g: Game, +pressed: Bool, dir: Dir) -> Game:
+  match pressed:
+    case True{}:
+      try_move(g, dir)
+    case False{}:
+      g
+
+def hold_left(g: Game, +pressed: Bool) -> Game:
+  hold_move(set_left(g, pressed), pressed, Left{})
+
+def hold_right(g: Game, +pressed: Bool) -> Game:
+  hold_move(set_right(g, pressed), pressed, Right{})
+
+def hold_up(g: Game, +pressed: Bool) -> Game:
+  hold_move(set_up(g, pressed), pressed, Up{})
+
+def hold_down(g: Game, +pressed: Bool) -> Game:
+  hold_move(set_down(g, pressed), pressed, Down{})
+
+def key_is(+code: U32, +a: U32, +b: U32) -> Bool:
+  Bool.or(U32.is_eq(code, a), U32.is_eq(code, b))
+
+def key_is3(+code: U32, +a: U32, +b: U32, +c: U32) -> Bool:
+  Bool.or(U32.is_eq(code, a), key_is(code, b, c))
+
 def apply_arrow_d(code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_down(g, pressed)
+      hold_down(g, pressed)
     case False{}:
       g
 
 def apply_arrow_u(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_up(g, pressed)
+      hold_up(g, pressed)
     case False{}:
-      apply_arrow_d(code, pressed, g, U32.is_eq(code, 63233))
+      apply_arrow_d(code, pressed, g, key_is3(code, 63233, 65652, 116))
 
 def apply_arrow_r(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_right(g, pressed)
+      hold_right(g, pressed)
     case False{}:
-      apply_arrow_u(code, pressed, g, U32.is_eq(code, 63232))
+      apply_arrow_u(code, pressed, g, key_is3(code, 63232, 65647, 111))
 
 def apply_arrow_l(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_left(g, pressed)
+      hold_left(g, pressed)
     case False{}:
-      apply_arrow_r(code, pressed, g, U32.is_eq(code, 63235))
+      apply_arrow_r(code, pressed, g, key_is(code, 63235, 65650))
 
 def apply_downk(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_down(g, pressed)
+      hold_down(g, pressed)
     case False{}:
-      apply_arrow_l(code, pressed, g, U32.is_eq(code, 63234))
+      apply_arrow_l(code, pressed, g, key_is(code, 63234, 65649))
 
 def apply_up(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_up(g, pressed)
+      hold_up(g, pressed)
     case False{}:
-      apply_downk(code, pressed, g, U32.is_eq(code, 115))
+      apply_downk(code, pressed, g, key_is(code, 115, 65575))
 
 def apply_right(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_right(g, pressed)
+      hold_right(g, pressed)
     case False{}:
-      apply_up(code, pressed, g, U32.is_eq(code, 119))
+      apply_up(code, pressed, g, key_is(code, 119, 65561))
 
 def apply_left(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
   match z:
     case True{}:
-      set_left(g, pressed)
+      hold_left(g, pressed)
     case False{}:
-      apply_right(code, pressed, g, U32.is_eq(code, 100))
+      apply_right(code, pressed, g, key_is(code, 100, 65576))
 
 def apply_restart(pressed: Bool, g: Game) -> Game:
   match pressed:
@@ -363,10 +394,10 @@ def apply_r(+code: U32, pressed: Bool, g: Game, z: Bool) -> Game:
     case True{}:
       apply_restart(pressed, g)
     case False{}:
-      apply_left(code, pressed, g, U32.is_eq(code, 97))
+      apply_left(code, pressed, g, key_is(code, 97, 65574))
 
 def apply_key(+code: U32, pressed: Bool, g: Game) -> Game:
-  apply_r(code, pressed, g, U32.is_eq(code, 114))
+  apply_r(code, pressed, g, key_is(code, 114, 65563))
 
 # Drawing
 def cell_frog_on(+kind: U32, frog: Bool) -> Image:
@@ -468,7 +499,7 @@ def when_esc_on(
 def when_esc(
   +code: U32, pressed: Bool, g: Game, k: Game -> Maybe<Game>
 ) -> Maybe<Game>:
-  when_esc_on(code, pressed, g, k, U32.is_eq(code, 27))
+  when_esc_on(code, pressed, g, k, key_is(code, 27, 65545))
 
 def step(events: List<Event>, g: Game) -> Maybe<Game>:
   match events:
@@ -490,4 +521,5 @@ def tick(events: List<Event>, g: Game) -> IO(Maybe<Game>):
   IO.pure(Maybe<Game>, step(events, g))
 
 def main() -> IO(Unit):
-  App.run(~Game, ~App{view, tick}, "Frog Wizard", 256, 256, start())
+  App.run(~Game, ~App{view, tick}, "Frog Wizard — WASD / arrows", 256, 256,
+    start())

@@ -29,9 +29,11 @@ Serve the `dist` folder and open the page.
 
 ### Controls
 
-- **WASD** or **arrow keys** — walk one tile at a time
+- **WASD** or **arrow keys** — walk one tile at a time (click the window first so it has keyboard focus)
 - **R** — restart
 - **Esc** / close window — quit (native)
+
+Taps count: a press and release in the same frame still moves one tile. Hold a key to keep walking.
 
 ### How to win
 

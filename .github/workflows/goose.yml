@@ -8,6 +8,8 @@ on:
 jobs:
   prove-and-play:
     runs-on: ubuntu-latest
+    # Secrets live on the repo's "main" Environment (not repo-level secrets).
+    environment: main
     steps:
       - uses: actions/checkout@v4
 

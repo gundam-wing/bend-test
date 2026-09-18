@@ -56,7 +56,7 @@ host/play.sh    Resolves Bend loader path, launches the game
 
 ## CI
 
-`.github/workflows/goose.yml` installs Bend, checks `PROOF.bend`, then runs `--demo` with `TYPESAFE_API_KEY`.
+`.github/workflows/goose.yml` installs Bend, checks `PROOF.bend`, then runs `--demo` with `TYPESAFE_API_KEY` from the repo's **`main` Environment** secrets.
 
 ## Credits
 

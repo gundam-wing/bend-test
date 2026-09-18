@@ -725,6 +725,12 @@ def title_pix(x: U32, y: U32) -> U32:
 def talk_bg(+x: U32, +y: U32) -> U32:
   Bool.pick(U32, U32.is_lt(y, 48), 2759186, 1708584)
 
+def talk_face_on(+c: U32, +x: U32, +y: U32) -> U32:
+  Bool.pick(U32, U32.is_eq(c, 16711935), talk_bg(x, y), c)
+
+def talk_face_pix(+npc: U32, +ax: U32, +ay: U32, +x: U32, +y: U32) -> U32:
+  talk_face_on(art_pix(npc_art(npc), ax, ay), x, y)
+
 def talk_pix_npc(+npc: U32, +x: U32, +y: U32, face: Bool) -> U32:
   match face:
     case True{}:
@@ -732,12 +738,6 @@ def talk_pix_npc(+npc: U32, +x: U32, +y: U32, face: Bool) -> U32:
         x, y)
     case False{}:
       talk_bg(x, y)
-
-def talk_face_pix(+npc: U32, +ax: U32, +ay: U32, +x: U32, +y: U32) -> U32:
-  talk_face_on(art_pix(npc_art(npc), ax, ay), x, y)
-
-def talk_face_on(+c: U32, +x: U32, +y: U32) -> U32:
-  Bool.pick(U32, U32.is_eq(c, 16711935), talk_bg(x, y), c)
 
 def talk_from(+npc: U32, +x: U32, +y: U32) -> U32:
   talk_pix_npc(npc, x, y, Bool.and(Bool.and(U32.is_ge(x, 16), U32.is_lt(x, 80)),

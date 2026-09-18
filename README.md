@@ -1,6 +1,16 @@
-# Frog Wizard
+# Frog King
 
-A tiny retro pixel-art game written in [Bend](https://bend-lang.com/). You are a frog wizard. Walk a swamp tilemap, collect **12 fly brains**, and beat the **2 minute** clock.
+A Pokémon-style story map written in [Bend](https://bend-lang.com/). You are **Ribbit the Frog Wizard**. Walk connected regions, talk to council characters, and build **consensus** to rule as Frog King — ushering in a new age of grand technological progress.
+
+## Story
+
+1. **Lily Pad Village** — Elder Lily opens the council road. Merchant Tad waits by the reeds.
+2. **Copper Cog Lab** — Engineer Toad needs **3 fly brains** from the swamp for the Grand Diffuser.
+3. **Reed Swamp** — Gather brains, earn Captain Newt’s shield-vote.
+4. **Mist Shrine** — Oracle Sal joins once Engineer and Captain have spoken for you.
+5. Return to Elder Lily for the fifth vote, then claim the **Throne Hall**.
+
+Cyan warp pads link the maps (village ↔ swamp ↔ shrine, village ↔ lab, throne south gate).
 
 ## Install Bend
 
@@ -12,12 +22,14 @@ On Linux a native window needs `libx11-dev`. Then open a new shell (or add `~/.b
 
 ## Play
 
-Native (60 Hz X11 / AppKit window):
+Native (60 Hz window):
 
 ```bash
-bend src/game.bend -o frog-wizard
-./frog-wizard
+bend src/game.bend -o frog-king
+./frog-king
 ```
+
+Or `./play.sh`.
 
 Browser:
 
@@ -25,30 +37,31 @@ Browser:
 bend src/index.html -o dist
 ```
 
-Serve the `dist` folder and open the page.
+Serve the `dist` folder and open the page. The browser build shows a dialogue box with full story text.
 
 ### Controls
 
-- **WASD** or **arrow keys** — walk one tile at a time (click the window first so it has keyboard focus)
+- **WASD** / **arrows** — walk
+- **Space** / **Z** / **Enter** — talk / advance dialogue / leave title
 - **R** — restart
-- **Esc** / close window — quit (native)
+- **Esc** — quit (native)
 
-Taps count: a press and release in the same frame still moves one tile. Hold a key to keep walking.
+Face a character (or the throne) and press Space. Hold a direction while talking to choose whom you address when several stand near.
 
-### How to win
+### HUD
 
-The top row is the HUD: twelve brain slots fill as you collect, and the right-hand bar is the remaining time (green → yellow → red). Gather every fly brain before the bar empties. A win screen shows a giant frog wizard; running out of time shows a missed brain.
+Top row: five council vote slots, then three brain slots for the Engineer’s quest.
 
 ## Project layout
 
-- `src/sprites.bend` — frog-wizard sprite, fly-brain sprite, grass / water / tree tiles, HUD
-- `src/game.bend` — 16×16 tilemap, movement, collecting, 7200-frame timer, `App.run`
-- `src/index.html` — canvas player that imports the Bend game
-- `src/test.bend` — checks that the map has 12 brains
-- `LAWS.bend` / `PROOF.bend` — Bend laws: 12 brains, 2 minute limit, walkable tiles
-- `AGENTS.md` — Bend agent conventions from [bend-lang.com](https://bend-lang.com/)
+- `src/sprites.bend` — frog, NPCs, brains, warps, throne, tiles, talk/title/win art
+- `src/game.bend` — five maps, movement, warps, dialogue state, consensus flags, `App.run`
+- `src/index.html` / `src/play.js` — canvas player + story dialogue overlay
+- `src/test.bend` — smoke checks
+- `LAWS.bend` / `PROOF.bend` — Bend laws for vote goal, brains, walkability, NPCs
+- `AGENTS.md` — Bend agent conventions
 
 ```bash
-bend src/test.bend     # prints brains=12 goal=12 time=7200
-bend PROOF.bend        # All terms check.
+bend src/test.bend
+bend PROOF.bend
 ```

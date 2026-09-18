@@ -1,12 +1,15 @@
 import Base
 import ./src/game.bend as G
 
-# Collect 12 fly brains in 120 seconds (7200 frames at 60 Hz).
-law goal_is_twelve:
-  {G.GOAL() == 12 : U32}
+# Unite five council seats to become Frog King.
+law vote_goal_is_five:
+  {G.VOTE_GOAL() == 5 : U32}
 
-law time_is_two_minutes:
-  {G.TIME_LIMIT() == 7200 : U32}
+law engineer_needs_three_brains:
+  {G.BRAIN_NEED() == 3 : U32}
+
+law swamp_has_six_brains:
+  {G.brain_count() == 6 : U32}
 
 law grass_is_walkable:
   {G.walkable(0) == True{} : Bool}
@@ -20,5 +23,11 @@ law tree_is_blocked:
 law brain_is_walkable:
   {G.walkable(2) == True{} : Bool}
 
-law twelve_brains_on_map:
-  {G.brain_count() == 12 : U32}
+law warp_is_walkable:
+  {G.walkable(11) == True{} : Bool}
+
+law elder_is_npc:
+  {G.is_npc(4) == True{} : Bool}
+
+law throne_is_interact:
+  {G.is_interact(10) == True{} : Bool}

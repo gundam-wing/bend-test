@@ -8,12 +8,18 @@ def px_of(m: Maybe<G.Game>) -> U32:
     case Some{g}:
       G.pos_x(g)
 
-def tap_d() -> U32:
-  px_of(G.step(
-    Con{Key{100, True{}}, Con{Key{100, False{}}, Nil{}}},
-    G.start()
-  ))
+def votes_of(m: Maybe<G.Game>) -> U32:
+  match m:
+    case None{}:
+      0
+    case Some{g}:
+      G.votes_of(g)
+
+def tap_space() -> U32:
+  # Leave title screen.
+  px_of(G.step(Con{Key{32, True{}}, Nil{}}, G.start()))
 
 def main() -> String:
-  "brains=" ++ U32.show(G.brain_count()) ++ " goal=" ++ U32.show(G.GOAL()) ++
-    " time=" ++ U32.show(G.TIME_LIMIT()) ++ " tapD=" ++ U32.show(tap_d())
+  "votes=" ++ U32.show(G.VOTE_GOAL()) ++ " brains_need=" ++
+    U32.show(G.BRAIN_NEED()) ++ " swamp_brains=" ++
+    U32.show(G.brain_count()) ++ " leave_title_px=" ++ U32.show(tap_space())

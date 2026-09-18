@@ -1,8 +1,8 @@
-# Pixel-art sprites and tiles for Frog Wizard.
+# Pixel-art sprites and tiles for Frog King.
 # Colors are 0xRRGGBB stored as decimal U32 (Bend has no hex literals).
 import Base
 
-# Palette (hex in comments)
+# Palette notes (hex in comments)
 # TRANS  0xFF00FF  16711935
 # HAT    0x6B3FA0   7028640
 # STAR   0xF0D060  15781984
@@ -29,11 +29,13 @@ import Base
 # GOLD   0xE8C547  15254855
 # RED    0xC04040  12599360
 # BAR_G  0x40C070   4243568
-# BAR_Y  0xD0B040  13676608
-# WINBG  0x142018   1318936
-# LOSEBG 0x280808   2623496
-# SKY    0x1A1030   1708080
 # SLOT   0x3A2818   3811352
+# STEEL  0x6A7A88   6978184
+# COG    0xC07030  12607536
+# BLUE   0x4060C0   4227264
+# ORANGE 0xE07020  14708768
+# PURPLE 0x7040A0   7356576
+# CROWN  0xFFD700  16766720
 
 def TRANS() -> U32:
   16711935
@@ -44,11 +46,6 @@ def pow2(+n: Nat) -> U32:
       1
     case 1n+p:
       (pow2(p) * 2 : U32)
-
-def toss(u: Unit) -> U32:
-  match u:
-    case Unit{}:
-      0
 
 def grid(~pix: U32 -> U32 -> U32, +d: Nat, +x: U32, +y: U32) -> Image:
   match d:
@@ -101,7 +98,7 @@ def pal_y(+c: Char, z: Bool) -> U32:
     case True{}:
       15913034
     case False{}:
-      pal_w(c, Char.is_eq(c, 'W'))
+      pal_w(c, Char.is_eq(c, 'Y'))
 
 def pal_l(+c: Char, z: Bool) -> U32:
   match z:
@@ -138,12 +135,54 @@ def pal_h(+c: Char, z: Bool) -> U32:
     case False{}:
       pal_s(c, Char.is_eq(c, 'S'))
 
+def pal_o(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      14708768
+    case False{}:
+      pal_h(c, Char.is_eq(c, 'H'))
+
+def pal_u(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      7356576
+    case False{}:
+      pal_o(c, Char.is_eq(c, 'O'))
+
+def pal_e(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      6978184
+    case False{}:
+      pal_u(c, Char.is_eq(c, 'U'))
+
+def pal_m(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      12607536
+    case False{}:
+      pal_e(c, Char.is_eq(c, 'E'))
+
+def pal_n(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      4227264
+    case False{}:
+      pal_m(c, Char.is_eq(c, 'M'))
+
+def pal_d(+c: Char, z: Bool) -> U32:
+  match z:
+    case True{}:
+      16766720
+    case False{}:
+      pal_n(c, Char.is_eq(c, 'N'))
+
 def pal_dot(+c: Char, z: Bool) -> U32:
   match z:
     case True{}:
       16711935
     case False{}:
-      pal_h(c, Char.is_eq(c, 'H'))
+      pal_d(c, Char.is_eq(c, 'D'))
 
 def pal(+c: Char) -> U32:
   pal_dot(c, Char.is_eq(c, '.'))
@@ -185,11 +224,88 @@ def BRAIN_ART() -> String:
     "................" ++ "................" ++ "................" ++
     "................"
 
+def ELDER_ART() -> String:
+  "......WWW......." ++ ".....WYYYW......" ++ "....WYYYYYW....." ++
+    ".....WYYYW......" ++ "......GGG......." ++ ".....LGGGL......" ++
+    "....LGWBWGL....." ++ "....KKGYYGK....." ++ ".....KGYYGK....." ++
+    "......GYYG......" ++ ".....WWWWW......" ++ "....WYYYYYW....." ++
+    "....WYYYYYW....." ++ ".....WWWWW......" ++ ".....K...K......" ++
+    "....KK...KK....."
+
+def ENGINEER_ART() -> String:
+  ".....EEEEE......" ++ "....EMMMMME....." ++ "....EMWMWME....." ++
+    ".....EMMME......" ++ "......GGG......." ++ ".....LGGGL......" ++
+    "....LGWBWGL....." ++ "....KKGYYGK.M..." ++ ".....KGYYGK.M..." ++
+    "......GYYG..M..." ++ ".....EEEEE......" ++ "....EMMMMME....." ++
+    "....EM.M.ME....." ++ ".....EEEEE......" ++ ".....K...K......" ++
+    "....KK...KK....."
+
+def CAPTAIN_ART() -> String:
+  "......NNN......." ++ ".....NWWWN......" ++ "....NWSWSWN....." ++
+    ".....NWWWN......" ++ "......GGG......." ++ ".....LGGGL......" ++
+    "....LGWBWGL....." ++ "....KKGYYGK....." ++ ".....KGYYGK.N..." ++
+    "......GYYG.NN..." ++ ".....NNNNN......" ++ "....NYYYYYN....." ++
+    "....NYNNNYN....." ++ ".....NNNNN......" ++ ".....K...K......" ++
+    "....KK...KK....."
+
+def MERCHANT_ART() -> String:
+  "......OOO......." ++ ".....OYYYO......" ++ "....OYWBWYO....." ++
+    ".....OYYYO......" ++ "......GGG......." ++ ".....LGGGL......" ++
+    "....LGWBWGL....." ++ "....KKGYYGK.O..." ++ ".....KGYYGK.O..." ++
+    "......GYYG..O..." ++ ".....OOOOO......" ++ "....OYYYYYO....." ++
+    "....OYOOOYO....." ++ ".....OOOOO......" ++ ".....K...K......" ++
+    "....KK...KK....."
+
+def ORACLE_ART() -> String:
+  "......UUU......." ++ ".....USUSU......" ++ "....UYYYYYU....." ++
+    ".....UYYYU......" ++ "......GGG......." ++ ".....LGGGL......" ++
+    "....LGWBWGL....." ++ "....KKGYYGK....." ++ ".....KGYYGK.U..." ++
+    "......GYYG.UU..." ++ ".....UUUUU......" ++ "....UYYYYYU....." ++
+    "....UYUYUYU....." ++ ".....UUUUU......" ++ ".....K...K......" ++
+    "....KK...KK....."
+
+def THRONE_ART() -> String:
+  "......DDD......." ++ ".....DSDSD......" ++ "....DYYYYYD....." ++
+    ".....DYYYD......" ++ "....YY...YY....." ++ "....Y.....Y....." ++
+    "...YYWWWWWYY...." ++ "...YWYYYYYYW...." ++ "...YWYBBBYYW...." ++
+    "...YWYYYYYYW...." ++ "...YYWWWWWYY...." ++ "....Y.....Y....." ++
+    "....YY...YY....." ++ ".....YYYYY......" ++ "......YYY......." ++
+    "................"
+
+def WARP_ART() -> String:
+  "................" ++ "......CCCC......" ++ ".....CYYYYC....." ++
+    "....CYWBWYC....." ++ "....CYYYYYYC...." ++ ".....CYYYYC....." ++
+    "......CCCC......" ++ ".......CC......." ++ "......CCCC......" ++
+    ".....CYYYYC....." ++ "....CYWBWYC....." ++ "....CYYYYYYC...." ++
+    ".....CYYYYC....." ++ "......CCCC......" ++ "................" ++
+    "................"
+
 def frog_sprite() -> Image:
   art_grid(4n, FROG_ART(), 0, 0)
 
 def brain_sprite() -> Image:
   art_grid(4n, BRAIN_ART(), 0, 0)
+
+def elder_sprite() -> Image:
+  art_grid(4n, ELDER_ART(), 0, 0)
+
+def engineer_sprite() -> Image:
+  art_grid(4n, ENGINEER_ART(), 0, 0)
+
+def captain_sprite() -> Image:
+  art_grid(4n, CAPTAIN_ART(), 0, 0)
+
+def merchant_sprite() -> Image:
+  art_grid(4n, MERCHANT_ART(), 0, 0)
+
+def oracle_sprite() -> Image:
+  art_grid(4n, ORACLE_ART(), 0, 0)
+
+def throne_sprite() -> Image:
+  art_grid(4n, THRONE_ART(), 0, 0)
+
+def warp_sprite() -> Image:
+  art_grid(4n, WARP_ART(), 0, 0)
 
 def overlay_two_pix(+key: U32, +c: U32, b: U32) -> Image:
   Bool.pick(Image, U32.is_eq(c, key), Pix{b}, Pix{c})
@@ -353,6 +469,19 @@ def wood_from(+x: U32, +y: U32) -> U32:
 def wood_pix(x: U32, y: U32) -> U32:
   wood_from(x, y)
 
+def floor_pix_alt(x: U32, y: U32, seam: Bool) -> U32:
+  match seam:
+    case True{}:
+      6978184
+    case False{}:
+      3811352
+
+def floor_from(+x: U32, +y: U32) -> U32:
+  floor_pix_alt(x, y, U32.is_eq(U32.and((x + y : U32), 7), 0))
+
+def floor_pix(x: U32, y: U32) -> U32:
+  floor_from(x, y)
+
 def grass_tile() -> Image:
   grid(~grass_pix, 4n, 0, 0)
 
@@ -365,25 +494,105 @@ def tree_tile() -> Image:
 def wood_tile() -> Image:
   grid(~wood_pix, 4n, 0, 0)
 
+def floor_tile() -> Image:
+  grid(~floor_pix, 4n, 0, 0)
+
 def brain_tile() -> Image:
   overlay(16711935, brain_sprite(), grass_tile())
+
+def elder_tile() -> Image:
+  overlay(16711935, elder_sprite(), grass_tile())
+
+def engineer_tile() -> Image:
+  overlay(16711935, engineer_sprite(), floor_tile())
+
+def captain_tile() -> Image:
+  overlay(16711935, captain_sprite(), grass_tile())
+
+def merchant_tile() -> Image:
+  overlay(16711935, merchant_sprite(), grass_tile())
+
+def oracle_tile() -> Image:
+  overlay(16711935, oracle_sprite(), grass_tile())
+
+def throne_tile() -> Image:
+  overlay(16711935, throne_sprite(), floor_tile())
+
+def warp_tile() -> Image:
+  overlay(16711935, warp_sprite(), grass_tile())
 
 def frog_on(bg: Image) -> Image:
   overlay(16711935, frog_sprite(), bg)
 
-def tile_of_hud(kind: U32, z: Bool) -> Image:
+def tile_of_floor(kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      floor_tile()
+    case False{}:
+      grass_tile()
+
+def tile_of_hud(+kind: U32, z: Bool) -> Image:
   match z:
     case True{}:
       wood_tile()
     case False{}:
-      grass_tile()
+      tile_of_floor(kind, U32.is_eq(kind, 12))
+
+def tile_of_warp(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      warp_tile()
+    case False{}:
+      tile_of_hud(kind, U32.is_eq(kind, 9))
+
+def tile_of_throne(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      throne_tile()
+    case False{}:
+      tile_of_warp(kind, U32.is_eq(kind, 11))
+
+def tile_of_oracle(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      oracle_tile()
+    case False{}:
+      tile_of_throne(kind, U32.is_eq(kind, 10))
+
+def tile_of_merchant(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      merchant_tile()
+    case False{}:
+      tile_of_oracle(kind, U32.is_eq(kind, 8))
+
+def tile_of_captain(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      captain_tile()
+    case False{}:
+      tile_of_merchant(kind, U32.is_eq(kind, 7))
+
+def tile_of_engineer(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      engineer_tile()
+    case False{}:
+      tile_of_captain(kind, U32.is_eq(kind, 6))
+
+def tile_of_elder(+kind: U32, z: Bool) -> Image:
+  match z:
+    case True{}:
+      elder_tile()
+    case False{}:
+      tile_of_engineer(kind, U32.is_eq(kind, 5))
 
 def tile_of_tree(+kind: U32, z: Bool) -> Image:
   match z:
     case True{}:
       tree_tile()
     case False{}:
-      tile_of_hud(kind, U32.is_eq(kind, 9))
+      tile_of_elder(kind, U32.is_eq(kind, 4))
 
 def tile_of_water(+kind: U32, z: Bool) -> Image:
   match z:
@@ -401,6 +610,15 @@ def tile_of_brain(+kind: U32, z: Bool) -> Image:
 
 def tile_of(+kind: U32) -> Image:
   tile_of_brain(kind, U32.is_eq(kind, 2))
+
+def npc_art(+npc: U32) -> String:
+  Bool.pick(String, U32.is_eq(npc, 1), ELDER_ART(),
+    Bool.pick(String, U32.is_eq(npc, 2), ENGINEER_ART(),
+      Bool.pick(String, U32.is_eq(npc, 3), CAPTAIN_ART(),
+        Bool.pick(String, U32.is_eq(npc, 4), MERCHANT_ART(),
+          Bool.pick(String, U32.is_eq(npc, 5), ORACLE_ART(),
+            Bool.pick(String, U32.is_eq(npc, 6), THRONE_ART(),
+              FROG_ART()))))))
 
 def slot_empty_y(+x: U32, +y: U32, inner: Bool) -> U32:
   match inner:
@@ -425,78 +643,34 @@ def slot_empty_pix(x: U32, y: U32) -> U32:
 def slot_tile(+filled: Bool) -> Image:
   match filled:
     case True{}:
+      overlay(16711935, frog_sprite(), wood_tile())
+    case False{}:
+      grid(~slot_empty_pix, 4n, 0, 0)
+
+def brain_hud_tile(+filled: Bool) -> Image:
+  match filled:
+    case True{}:
       overlay(16711935, brain_sprite(), wood_tile())
     case False{}:
       grid(~slot_empty_pix, 4n, 0, 0)
 
-def bar_fill(+time: U32) -> U32:
-  U32.div(time, 150)
-
-def bar_color_mid(time: U32, mid: Bool) -> U32:
-  match mid:
+# HUD: tx 1-5 = council votes, tx 7-9 = brains held, rest wood.
+def hud_tile_brain(+tx: U32, +brains: U32, brain_slot: Bool) -> Image:
+  match brain_slot:
     case True{}:
-      13676608
-    case False{}:
-      4243568
-
-def bar_color_low(+time: U32, low: Bool) -> U32:
-  match low:
-    case True{}:
-      12599360
-    case False{}:
-      bar_color_mid(time, U32.is_lt(time, 3600))
-
-def bar_color(+time: U32) -> U32:
-  bar_color_low(time, U32.is_lt(time, 1800))
-
-def bar_pix_on(+time: U32, +x: U32, +y: U32, filled: Bool) -> U32:
-  match filled:
-    case True{}:
-      bar_color(time)
-    case False{}:
-      3811352
-
-def bar_pix_fill(+time: U32, +tx: U32, +x: U32, +y: U32) -> U32:
-  +col = ((tx - 13 : U32) * 16 + x : U32)
-  bar_pix_on(time, x, y, U32.is_lt(col, bar_fill(time)))
-
-def bar_pix_y(+time: U32, +tx: U32, +x: U32, +y: U32, band: Bool) -> U32:
-  match band:
-    case True{}:
-      bar_pix_fill(time, tx, x, y)
-    case False{}:
-      wood_pix(x, y)
-
-def bar_pix(+time: U32, +tx: U32, +x: U32, +y: U32) -> U32:
-  bar_pix_y(time, tx, x, y, Bool.and(U32.is_ge(y, 4), U32.is_le(y, 11)))
-
-def bar_grid(+d: Nat, +time: U32, +tx: U32, +x: U32, +y: U32) -> Image:
-  match d:
-    case 0n:
-      Pix{bar_pix(time, tx, x, y)}
-    case 1n+p:
-      +s = pow2(p)
-      tl tr = bar_grid(p, time, tx, x, y) bar_grid(p, time, tx, (x + s : U32), y)
-      bl br = bar_grid(p, time, tx, x, (y + s : U32)) bar_grid(p, time, tx,
-        (x + s : U32), (y + s : U32))
-      Qua{tl, tr, bl, br}
-
-def hud_tile_bar(+tx: U32, +time: U32, bar: Bool) -> Image:
-  match bar:
-    case True{}:
-      bar_grid(4n, time, tx, 0, 0)
+      brain_hud_tile(U32.is_ge(brains, (tx - 6 : U32)))
     case False{}:
       wood_tile()
 
-def hud_tile_slot(+tx: U32, +score: U32, +time: U32, slot: Bool) -> Image:
-  match slot:
+def hud_tile_vote(+tx: U32, +votes: U32, +brains: U32, vote: Bool) -> Image:
+  match vote:
     case True{}:
-      slot_tile(U32.is_ge(score, tx))
+      slot_tile(U32.is_ge(votes, tx))
     case False{}:
-      hud_tile_bar(tx, time, U32.is_ge(tx, 13))
+      hud_tile_brain(tx, brains, Bool.and(U32.is_ge(tx, 7), U32.is_le(tx, 9)))
 
-def hud_tile(+tx: U32, +score: U32, +time: U32) -> Image:
-  hud_tile_slot(tx, score, time, Bool.and(U32.is_ge(tx, 1), U32.is_le(tx, 12)))
+def hud_tile(+tx: U32, +votes: U32, +brains: U32) -> Image:
+  hud_tile_vote(tx, votes, brains, Bool.and(U32.is_ge(tx, 1), U32.is_le(tx, 5)))
 
 def win_bg(+x: U32, +y: U32) -> U32:
   Bool.pick(U32, U32.is_eq(U32.and((x + U32.shrn(y, 2n) : U32), 15), 0),
@@ -516,38 +690,72 @@ def win_pix_box(+x: U32, +y: U32, wide: Bool) -> U32:
     case False{}:
       win_bg(x, y)
 
+def win_crown(+x: U32, +y: U32, crown: Bool) -> U32:
+  match crown:
+    case True{}:
+      art_pix(THRONE_ART(), U32.div((x - 96 : U32), 4),
+        U32.div((y - 32 : U32), 4))
+    case False{}:
+      win_pix_box(x, y, Bool.and(U32.is_ge(x, 96), U32.is_lt(x, 160)))
+
 def win_from(+x: U32, +y: U32) -> U32:
-  win_pix_box(x, y, Bool.and(U32.is_ge(x, 96), U32.is_lt(x, 160)))
+  win_crown(x, y, Bool.and(Bool.and(U32.is_ge(x, 96), U32.is_lt(x, 160)),
+    Bool.and(U32.is_ge(y, 32), U32.is_lt(y, 96))))
 
 def win_pix(x: U32, y: U32) -> U32:
   win_from(x, y)
 
-def lose_bg(+x: U32, +y: U32) -> U32:
-  Bool.pick(U32, U32.is_eq(U32.and((x + y : U32), 7), 0), 12599360, 2623496)
+def title_bg(+x: U32, +y: U32) -> U32:
+  Bool.pick(U32, U32.is_eq(U32.and((x + y : U32), 31), 0), 7270600, 1708080)
 
-def lose_pix_y(+x: U32, +y: U32, tall: Bool) -> U32:
+def title_pix_y(+x: U32, +y: U32, tall: Bool) -> U32:
   match tall:
     case True{}:
-      art_pix(BRAIN_ART(), U32.div((x - 96 : U32), 4),
-        U32.div((y - 96 : U32), 4))
+      art_pix(FROG_ART(), U32.div((x - 96 : U32), 4), U32.div((y - 80 : U32), 4))
     case False{}:
-      lose_bg(x, y)
+      title_bg(x, y)
 
-def lose_pix_box(+x: U32, +y: U32, wide: Bool) -> U32:
-  match wide:
+def title_from(+x: U32, +y: U32) -> U32:
+  title_pix_y(x, y, Bool.and(Bool.and(U32.is_ge(x, 96), U32.is_lt(x, 160)),
+    Bool.and(U32.is_ge(y, 80), U32.is_lt(y, 144))))
+
+def title_pix(x: U32, y: U32) -> U32:
+  title_from(x, y)
+
+def talk_bg(+x: U32, +y: U32) -> U32:
+  Bool.pick(U32, U32.is_lt(y, 48), 2759186, 1708584)
+
+def talk_pix_npc(+npc: U32, +x: U32, +y: U32, face: Bool) -> U32:
+  match face:
     case True{}:
-      lose_pix_y(x, y, Bool.and(U32.is_ge(y, 96), U32.is_lt(y, 160)))
+      art_pix(npc_art(npc), U32.div((x - 16 : U32), 4),
+        U32.div((y - 64 : U32), 4))
     case False{}:
-      lose_bg(x, y)
+      talk_bg(x, y)
 
-def lose_from(+x: U32, +y: U32) -> U32:
-  lose_pix_box(x, y, Bool.and(U32.is_ge(x, 96), U32.is_lt(x, 160)))
+def talk_from(+npc: U32, +x: U32, +y: U32) -> U32:
+  talk_pix_npc(npc, x, y, Bool.and(Bool.and(U32.is_ge(x, 16), U32.is_lt(x, 80)),
+    Bool.and(U32.is_ge(y, 64), U32.is_lt(y, 128))))
 
-def lose_pix(x: U32, y: U32) -> U32:
-  lose_from(x, y)
+def talk_pix_n(+npc: U32, x: U32, y: U32) -> U32:
+  talk_from(npc, x, y)
+
+def talk_grid(+d: Nat, +npc: U32, +x: U32, +y: U32) -> Image:
+  match d:
+    case 0n:
+      Pix{talk_pix_n(npc, x, y)}
+    case 1n+p:
+      +s = pow2(p)
+      tl tr = talk_grid(p, npc, x, y) talk_grid(p, npc, (x + s : U32), y)
+      bl br = talk_grid(p, npc, x, (y + s : U32)) talk_grid(p, npc,
+        (x + s : U32), (y + s : U32))
+      Qua{tl, tr, bl, br}
 
 def win_image() -> Image:
   grid(~win_pix, 8n, 0, 0)
 
-def lose_image() -> Image:
-  grid(~lose_pix, 8n, 0, 0)
+def title_image() -> Image:
+  grid(~title_pix, 8n, 0, 0)
+
+def talk_image(+npc: U32) -> Image:
+  talk_grid(8n, npc, 0, 0)

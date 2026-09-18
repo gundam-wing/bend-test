@@ -104,7 +104,7 @@ def V0_NPC() -> List<&2, U32>:
   [55, 185]
 
 def V0_WARP() -> List<&2, U32>:
-  [25, 157, 231]
+  [25, 157, 232]
 
 def map_village() -> Array<U32>:
   paint(V0_WARP(), paint([55], paint([185], paint(V0_TREE(),
@@ -150,7 +150,7 @@ def V2_FLOOR() -> List<&2, U32>:
   ]
 
 def map_lab() -> Array<U32>:
-  paint([231], paint([88], paint(V2_FLOOR(), paint(BORDER(), [0 : U32^8n], 9),
+  paint([232], paint([88], paint(V2_FLOOR(), paint(BORDER(), [0 : U32^8n], 9),
     12), 5), 11)
 
 # Map 3 — Mist Shrine: Oracle (8), warp west to swamp
@@ -181,7 +181,7 @@ def V4_FLOOR() -> List<&2, U32>:
   ]
 
 def map_throne() -> Array<U32>:
-  paint([231], paint([72], paint(V4_FLOOR(), paint(BORDER(), [0 : U32^8n], 9),
+  paint([232], paint([72], paint(V4_FLOOR(), paint(BORDER(), [0 : U32^8n], 9),
     12), 10), 11)
 
 def tiles_of_throne_on(z: Bool) -> Array<U32>:
@@ -715,13 +715,40 @@ def try_interact_dir(g: Game, +px: U32, +py: U32, dir: Dir) -> Game:
     case Down{}:
       try_interact_at(g, px, inc_sat(py))
 
+def keep_if_talking_mode(g: Game, again: Game -> Game, mode: Mode) -> Game:
+  match mode:
+    case Talk{}:
+      g
+    case Title{}:
+      g
+    case Win{}:
+      g
+    case Play{}:
+      again(g)
+
+def keep_if_talking(g: Game, again: Game -> Game) -> Game:
+  Game{tiles, map_id, px, py, brains, votes, allies, flags, talk_npc,
+    talk_step, cool, left, right, up, down, +mode} = g
+  keep_if_talking_mode(
+    Game{tiles, map_id, px, py, brains, votes, allies, flags, talk_npc,
+      talk_step, cool, left, right, up, down, mode},
+    again, mode
+  )
+
 def try_interact(g: Game) -> Game:
   Game{tiles, map_id, +px, +py, brains, votes, allies, flags, talk_npc,
     talk_step, cool, +left, +right, +up, +down, mode} = g
-  try_interact_dir(
-    Game{tiles, map_id, px, py, brains, votes, allies, flags, talk_npc,
-      talk_step, cool, left, right, up, down, mode},
-    px, py, pick_dir(left, right, up, down)
+  # Face first, then scan adjacent tiles if nothing started.
+  keep_if_talking(
+    try_interact_dir(
+      Game{tiles, map_id, px, py, brains, votes, allies, flags, talk_npc,
+        talk_step, cool, left, right, up, down, mode},
+      px, py, pick_dir(left, right, up, down)
+    ),
+    g2 => keep_if_talking(try_interact_at(g2, px, dec_sat(py)),
+      g3 => keep_if_talking(try_interact_at(g3, inc_sat(px), py),
+        g4 => keep_if_talking(try_interact_at(g4, px, inc_sat(py)),
+          g5 => try_interact_at(g5, dec_sat(px), py))))
   )
 
 def pickup_on(

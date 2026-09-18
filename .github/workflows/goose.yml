@@ -1,0 +1,40 @@
+name: Proven Goose Pond
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  prove-and-play:
+    runs-on: ubuntu-latest
+    # Secrets live on the repo's "main" Environment (not repo-level secrets).
+    environment: main
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Bend
+        run: |
+          curl -fsSL https://bend-lang.com/install.sh | sh
+          echo "$HOME/.bend/bin" >> "$GITHUB_PATH"
+
+      - name: Prove the goose is unreachable
+        run: bend goose/PROOF.bend
+
+      - name: Demo — Jev Destiny + Bend physics
+        env:
+          TYPESAFE_API_KEY: ${{ secrets.TYPESAFE_API_KEY }}
+          GOOSE_TURNS: "5"
+        run: |
+          if [ -z "$TYPESAFE_API_KEY" ]; then
+            echo "TYPESAFE_API_KEY missing — running mock oracle demo"
+          else
+            echo "TYPESAFE_API_KEY present — consulting real Jev"
+          fi
+          chmod +x host/play.sh
+          ./host/play.sh --demo

@@ -1,0 +1,6 @@
+# play.sh regenerates host/bunfig.toml pointing at your Bend install:
+#   $HOME/.bend/current/bend2/main.ts
+preload = ["/path/to/.bend/current/bend2/main.ts"]
+
+[serve.static]
+plugins = ["/path/to/.bend/current/bend2/main.ts"]

@@ -1,0 +1,6 @@
+.DS_Store
+node_modules/
+host/bunfig.toml
+*.log
+.env
+.bend-runtime/

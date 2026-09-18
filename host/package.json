@@ -1,0 +1,12 @@
+{
+  "name": "proven-goose-pond",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "CLI host: Bend proves the goose is unreachable; Jev picks every paddle from your vibes.",
+  "scripts": {
+    "play": "bun play.mjs",
+    "demo": "bun play.mjs --demo",
+    "check-bend": "bend ../goose/PROOF.bend"
+  }
+}
